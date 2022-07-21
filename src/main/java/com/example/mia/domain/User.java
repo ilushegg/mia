@@ -1,13 +1,18 @@
 package com.example.mia.domain;
 
+
+import java.util.Set;
+import org.springframework.security.core.userdetails.UserDetails;
+import com.example.mia.domain.Role;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name="usr")
+@Table(name="user")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String username;
@@ -15,6 +20,11 @@ public class User {
     private String password;
 
     private boolean active;
+
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles;
 
     public User(){
 
@@ -24,6 +34,7 @@ public class User {
         this.password = password;
         this.active = active;
     }
+
 
     public Long getId() {
         return id;
@@ -55,5 +66,13 @@ public class User {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

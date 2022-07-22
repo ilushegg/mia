@@ -1,0 +1,1 @@
+alter table message modify filename varchar(255);

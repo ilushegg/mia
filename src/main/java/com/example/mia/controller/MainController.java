@@ -25,6 +25,11 @@ public class MainController {
     @Value("${upload.path}")
     private String uploadPath;
 
+    @GetMapping("/")
+    public String welcome(){
+        return "welcome";
+    }
+
     @GetMapping("/main")
     public String main(Model model){
         Iterable<Message> messages = messageRepo.findAll();

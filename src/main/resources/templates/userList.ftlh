@@ -11,7 +11,8 @@
         <tbody>
         <#list users as user>
            <td>${user.username}</td>
-           <td><#list user.roles as role>${role}</#list></td>
+           <td><#list user.roles as role>${role}<#sep>, </#list></td>
+           <td><a href="/users/${user.id}">EDIT</a></td>
         </#list>
         </tbody>
       </table>

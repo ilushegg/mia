@@ -17,7 +17,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import javax.sql.DataSource;
 
 @Configuration
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
 

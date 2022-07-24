@@ -4,23 +4,28 @@ import com.example.mia.domain.Role;
 import com.example.mia.domain.User;
 import com.example.mia.repos.UserRepo;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
-
     private final UserRepo userRepo;
+    private final MailSender mailSender;
 
-    public UserService(UserRepo userRepo){
+    @Value("${hostname}")
+    private String hostname;
+
+    public UserService(UserRepo userRepo, MailSender mailSender){
+        this.mailSender = mailSender;
         this.userRepo = userRepo;
     }
-
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -44,5 +49,27 @@ public class UserService implements UserDetailsService {
         }
 
         userRepo.save(user);
+    }
+
+    public void sendMessage(User user){
+        if(!StringUtils.isEmpty(user.getEmail())){
+            String message = String.format(
+                    "Hello, %s! \n" +
+                            "Welcome to MIA. Please, visit next link: http://%s/activate/%s",
+                    user.getUsername(), hostname, user.getActivationCode()
+
+            );
+            mailSender.sendMessage(user.getEmail(), "ActivationCode", message);
+        }
+    }
+
+    public boolean activateUser(String code) {
+        User user = userRepo.findByActivationCode(code);
+        if(user == null){
+            return false;
+        }
+        user.setActivationCode(null);
+        userRepo.save(user);
+        return true;
     }
 }

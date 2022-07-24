@@ -1,5 +1,10 @@
 <#import "parts/common.ftlh" as c>
 <@c.page>
+    <div>
+        <#if message??>
+            ${message}
+        </#if>
+    </div>
     <form action="/login" method="post">
         <div class="">
             <label>Username: </label>
